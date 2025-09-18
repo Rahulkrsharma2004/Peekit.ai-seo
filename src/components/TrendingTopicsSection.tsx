@@ -26,11 +26,16 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
 
       const data = await response.json();
 
-      // filter by source
-      const todayData = data.filter((item: any) => {
+      // ✅ Step 1: filter by date + source
+      let todayData = data.filter((item: any) => {
         const itemDate = format(new Date(item.timestamp), "yyyy-MM-dd");
         return itemDate === formattedDate && item.source === source;
       });
+
+      // ✅ Step 2: fallback → if no today's data, use latest available for that source
+      if (todayData.length === 0) {
+        todayData = data.filter((item: any) => item.source === source);
+      }
 
       setTrendingData(todayData);
     } catch (error) {
