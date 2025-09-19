@@ -170,7 +170,7 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
           {!loading && (
             <div className="p-6 text-center border-t border-data-border bg-muted/20">
               <a
-                href="https://Peekit.ai"
+                href="https://Peekit.ai/dashboard"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
