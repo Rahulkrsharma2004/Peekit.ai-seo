@@ -37,7 +37,15 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
         todayData = data.filter((item: any) => item.source === source);
       }
 
+      // ✅ Step 3: fallback → if no today's data, use latest available for that source
+
+      if (todayData.length === 0) {
+        todayData = data;
+      }
+
       setTrendingData(todayData);
+
+      console.log("Fetched trending data:", todayData);
     } catch (error) {
       console.error("Error fetching trending data:", error);
     } finally {
@@ -162,7 +170,7 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
           {!loading && (
             <div className="p-6 text-center border-t border-data-border bg-muted/20">
               <a
-                href="https://www.Peekit.ai"
+                href="https://Peekit.ai"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"

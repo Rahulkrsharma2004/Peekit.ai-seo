@@ -1,9 +1,10 @@
 const IntroSection = () => {
-  const isLoggedIn = !!localStorage.getItem("token"); // check if token exists
+  
+  // const isLoggedIn = !!localStorage.getItem("token");
 
-  const moreLink = isLoggedIn
-    ? "https://peekit.ai"
-    : "https://peekit.ai/login";
+  // const moreLink = isLoggedIn
+  //   ? "https://peekit.ai"
+  //   : "https://peekit.ai/login";
 
   return (
     <section className="container mx-auto px-6 pt-8 pb-2">
@@ -13,7 +14,7 @@ const IntroSection = () => {
           <strong>Instagram</strong>, <strong>Youtube</strong>,{" "}
           <strong>TikTok</strong>, <strong>Reddit</strong>, and{" "}
           <a
-            href={moreLink}
+            href="https://peekit.ai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-700 transition-colors font-medium"
@@ -24,7 +25,7 @@ const IntroSection = () => {
           These cover more than 10 themes ranging from "Health and Wellness",
           "Technology", "Fashion" and{" "}
           <a
-            href={moreLink}
+            href="https://peekit.ai"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-700 transition-colors font-medium"
