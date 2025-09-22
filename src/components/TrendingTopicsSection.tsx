@@ -25,22 +25,31 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
       );
 
       const data = await response.json();
+      console.log("Raw fetched data:", data);
 
-      // ✅ Step 1: filter by date + source
-      let todayData = data.filter((item: any) => {
+      // ✅ Step 1: Filter all items for this source
+      const sourceData = data.filter((item: any) => item.source.toLowerCase() === source.toLowerCase());
+
+      // ✅ Step 2: Filter today's items for this source
+      let todayData = sourceData.filter((item: any) => {
         const itemDate = format(new Date(item.timestamp), "yyyy-MM-dd");
-        return itemDate === formattedDate && item.source === source;
+        return itemDate === formattedDate;
       });
 
-      // ✅ Step 2: fallback → if no today's data, use latest available for that source
-      if (todayData.length === 0) {
-        todayData = data.filter((item: any) => item.source === source);
-      }
+      // ✅ Step 3: If no today data → pick latest available date for that source
+      if (todayData.length === 0 && sourceData.length > 0) {
+        // Find latest date in this source
+        const latestDate = sourceData.reduce((latest: Date, item: any) => {
+          const d = new Date(item.timestamp);
+          return d > latest ? d : latest;
+        }, new Date(0));
 
-      // ✅ Step 3: fallback → if no today's data, use latest available for that source
+        const latestFormatted = format(latestDate, "yyyy-MM-dd");
 
-      if (todayData.length === 0) {
-        todayData = data;
+        todayData = sourceData.filter((item: any) => {
+          const itemDate = format(new Date(item.timestamp), "yyyy-MM-dd");
+          return itemDate === latestFormatted;
+        });
       }
 
       setTrendingData(todayData);
