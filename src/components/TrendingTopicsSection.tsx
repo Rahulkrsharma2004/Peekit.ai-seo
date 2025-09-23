@@ -15,52 +15,75 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
   }, [source]);
 
   const fetchTrendingData = async () => {
-    try {
-      setLoading(true);
-      const today = startOfDay(new Date());
-      const formattedDate = format(today, "yyyy-MM-dd");
+  try {
+    setLoading(true);
+    const today = startOfDay(new Date());
+    const yesterday = startOfDay(new Date(today.getTime() - 24 * 60 * 60 * 1000));
+    
+    const formattedToday = format(today, "yyyy-MM-dd");
+    const formattedYesterday = format(yesterday, "yyyy-MM-dd");
 
-      const response = await fetch(
-        `https://trends.simulyst.com/api/trends?timestamp=${formattedDate}`
-      );
+    let finalData = [];
 
-      const data = await response.json();
-      console.log("Raw fetched data:", data);
+    // ✅ Step 1: First try to fetch only today's data
+    let response = await fetch(`https://trends.simulyst.com/api/trends?timestamp=${formattedToday}`);
+    let data = await response.json();
+    console.log("Today's API data length:", data.length);
 
-      // ✅ Step 1: Filter all items for this source
-      const sourceData = data.filter((item: any) => item.source.toLowerCase() === source.toLowerCase());
+    // ✅ Step 2: Filter today's data for the source
+    const todayData = data.filter((item: any) => {
+      const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+      return isSourceMatch;
+    });
 
-      // ✅ Step 2: Filter today's items for this source
-      let todayData = sourceData.filter((item: any) => {
-        const itemDate = format(new Date(item.timestamp), "yyyy-MM-dd");
-        return itemDate === formattedDate;
+    console.log("Today's source data:", todayData.length);
+
+    if (todayData.length > 0) {
+      finalData = todayData;
+    } else {
+      // ✅ Step 3: If no today data, fetch only yesterday's data
+      console.log("No today data, fetching yesterday's data only");
+      
+      response = await fetch(`https://trends.simulyst.com/api/trends?timestamp=${formattedYesterday}`);
+      data = await response.json();
+      console.log("Yesterday's API data length:", data.length);
+
+      const yesterdayData = data.filter((item: any) => {
+        const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+        return isSourceMatch;
       });
 
-      // ✅ Step 3: If no today data → pick latest available date for that source
-      if (todayData.length === 0 && sourceData.length > 0) {
-        // Find latest date in this source
-        const latestDate = sourceData.reduce((latest: Date, item: any) => {
-          const d = new Date(item.timestamp);
-          return d > latest ? d : latest;
-        }, new Date(0));
+      console.log("Yesterday's source data:", yesterdayData.length);
 
-        const latestFormatted = format(latestDate, "yyyy-MM-dd");
+      if (yesterdayData.length > 0) {
+        finalData = yesterdayData;
+      } else {
+        // ✅ Step 4: If no yesterday data, fetch ALL data as fallback
+        console.log("No yesterday data, fetching ALL data as fallback");
+        
+        response = await fetch('https://trends.simulyst.com/api/trends');
+        data = await response.json();
+        console.log("All trends data length:", data.length);
 
-        todayData = sourceData.filter((item: any) => {
-          const itemDate = format(new Date(item.timestamp), "yyyy-MM-dd");
-          return itemDate === latestFormatted;
+        const allSourceData = data.filter((item: any) => {
+          const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+          return isSourceMatch;
         });
+
+        console.log("All source data fallback:", allSourceData.length);
+        finalData = allSourceData;
       }
-
-      setTrendingData(todayData);
-
-      console.log("Fetched trending data:", todayData);
-    } catch (error) {
-      console.error("Error fetching trending data:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    console.log("Final data length:", finalData.length);
+    setTrendingData(finalData);
+
+  } catch (error) {
+    console.error("Error fetching trending data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="container mx-auto px-6 pt-4 pb-8">
