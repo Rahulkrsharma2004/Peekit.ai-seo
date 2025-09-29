@@ -1,39 +1,33 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import ScrollToTop from "./components/ScrollToTop";
-
-const queryClient = new QueryClient();
+import DefaultPage from "./pages/AllSourcesDirPage";
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Navigate to="/instagram" replace />} />
-          <Route path="/instagram" element={<Index source="Instagram" />} />
-          <Route path="/youtube" element={<Index source="YouTube" />} />
-          <Route path="/x" element={<Index source="X" />} />
-          <Route path="/reddit" element={<Index source="Reddit" />} />
-          <Route path="/tiktok" element={<Index source="TikTok" />} />
-          <Route path="/google-news" element={<Index source="Google News" />} />
-          <Route
-            path="/google-trends"
-            element={<Index source="Google Trends" />}
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+  <BrowserRouter>
+    <Routes>
+      {/* Redirect root to /d */}
+      <Route path="/" element={<Navigate to="/d" replace />} />
 
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+      {/* Default page showing all sources */}
+      <Route path="/d" element={<DefaultPage />} />
+
+      {/* Source pages nested under /d */}
+      <Route path="/d/instagram" element={<Index source="Instagram" />} />
+      <Route path="/d/youtube" element={<Index source="YouTube" />} />
+      <Route path="/d/reddit" element={<Index source="Reddit" />} />
+      <Route path="/d/x" element={<Index source="X" />} />
+      <Route path="/d/tiktok" element={<Index source="TikTok" />} />
+      <Route
+        path="/d/google-trends"
+        element={<Index source="Google Trends" />}
+      />
+      <Route path="/d/google-news" element={<Index source="Google News" />} />
+
+      {/* Fallback */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
 );
 
 export default App;
