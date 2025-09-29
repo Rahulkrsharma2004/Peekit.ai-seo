@@ -15,75 +15,83 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
   }, [source]);
 
   const fetchTrendingData = async () => {
-  try {
-    setLoading(true);
-    const today = startOfDay(new Date());
-    const yesterday = startOfDay(new Date(today.getTime() - 24 * 60 * 60 * 1000));
-    
-    const formattedToday = format(today, "yyyy-MM-dd");
-    const formattedYesterday = format(yesterday, "yyyy-MM-dd");
+    try {
+      setLoading(true);
+      const today = startOfDay(new Date());
+      const yesterday = startOfDay(
+        new Date(today.getTime() - 24 * 60 * 60 * 1000)
+      );
 
-    let finalData = [];
+      const formattedToday = format(today, "yyyy-MM-dd");
+      const formattedYesterday = format(yesterday, "yyyy-MM-dd");
 
-    // ✅ Step 1: First try to fetch only today's data
-    let response = await fetch(`https://trends.simulyst.com/api/trends?timestamp=${formattedToday}`);
-    let data = await response.json();
-    console.log("Today's API data length:", data.length);
+      let finalData = [];
 
-    // ✅ Step 2: Filter today's data for the source
-    const todayData = data.filter((item: any) => {
-      const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
-      return isSourceMatch;
-    });
+      // ✅ Step 1: First try to fetch only today's data
+      let response = await fetch(
+        `https://trends.simulyst.com/api/trends?timestamp=${formattedToday}`
+      );
+      let data = await response.json();
+      console.log("Today's API data length:", data.length);
 
-    console.log("Today's source data:", todayData.length);
-
-    if (todayData.length > 0) {
-      finalData = todayData;
-    } else {
-      // ✅ Step 3: If no today data, fetch only yesterday's data
-      console.log("No today data, fetching yesterday's data only");
-      
-      response = await fetch(`https://trends.simulyst.com/api/trends?timestamp=${formattedYesterday}`);
-      data = await response.json();
-      console.log("Yesterday's API data length:", data.length);
-
-      const yesterdayData = data.filter((item: any) => {
-        const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+      // ✅ Step 2: Filter today's data for the source
+      const todayData = data.filter((item: any) => {
+        const isSourceMatch =
+          item.source?.toLowerCase().trim() === source.toLowerCase().trim();
         return isSourceMatch;
       });
 
-      console.log("Yesterday's source data:", yesterdayData.length);
+      console.log("Today's source data:", todayData.length);
 
-      if (yesterdayData.length > 0) {
-        finalData = yesterdayData;
+      if (todayData.length > 0) {
+        finalData = todayData;
       } else {
-        // ✅ Step 4: If no yesterday data, fetch ALL data as fallback
-        console.log("No yesterday data, fetching ALL data as fallback");
-        
-        response = await fetch('https://trends.simulyst.com/api/trends');
-        data = await response.json();
-        console.log("All trends data length:", data.length);
+        // ✅ Step 3: If no today data, fetch only yesterday's data
+        console.log("No today data, fetching yesterday's data only");
 
-        const allSourceData = data.filter((item: any) => {
-          const isSourceMatch = item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+        response = await fetch(
+          `https://trends.simulyst.com/api/trends?timestamp=${formattedYesterday}`
+        );
+        data = await response.json();
+        console.log("Yesterday's API data length:", data.length);
+
+        const yesterdayData = data.filter((item: any) => {
+          const isSourceMatch =
+            item.source?.toLowerCase().trim() === source.toLowerCase().trim();
           return isSourceMatch;
         });
 
-        console.log("All source data fallback:", allSourceData.length);
-        finalData = allSourceData;
+        console.log("Yesterday's source data:", yesterdayData.length);
+
+        if (yesterdayData.length > 0) {
+          finalData = yesterdayData;
+        } else {
+          // ✅ Step 4: If no yesterday data, fetch ALL data as fallback
+          console.log("No yesterday data, fetching ALL data as fallback");
+
+          response = await fetch("https://trends.simulyst.com/api/trends");
+          data = await response.json();
+          console.log("All trends data length:", data.length);
+
+          const allSourceData = data.filter((item: any) => {
+            const isSourceMatch =
+              item.source?.toLowerCase().trim() === source.toLowerCase().trim();
+            return isSourceMatch;
+          });
+
+          console.log("All source data fallback:", allSourceData.length);
+          finalData = allSourceData;
+        }
       }
+
+      console.log("Final data length:", finalData.length);
+      setTrendingData(finalData);
+    } catch (error) {
+      console.error("Error fetching trending data:", error);
+    } finally {
+      setLoading(false);
     }
-
-    console.log("Final data length:", finalData.length);
-    setTrendingData(finalData);
-
-  } catch (error) {
-    console.error("Error fetching trending data:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <section className="container mx-auto px-6 pt-4 pb-8">
@@ -129,8 +137,19 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
                     Trending topic
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-black">
-                    Engagement
+                    <span className="relative group cursor-help">
+                      Engagement
+                      <div
+                        className="absolute left-0 top-full mt-2 w-56 p-2 text-xs text-white bg-black rounded-md shadow-lg 
+                 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none"
+                      >
+                        Engagement represents the total number of interactions a
+                        topic has received (likes, comments, shares, reposts,
+                        etc.) on {source}.
+                      </div>
+                    </span>
                   </th>
+
                   <th className="px-6 py-4 text-left text-sm font-semibold text-black">
                     Trend Overview
                   </th>
@@ -205,7 +224,7 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
                 href="https://Peekit.ai/dashboard"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="block w-full bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 View All Trending Topics
               </a>

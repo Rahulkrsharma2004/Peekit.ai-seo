@@ -21,7 +21,7 @@ const IntroSection = () => {
           >
             3 more
           </a>
-          . There are more than 100 topics trending across Instagram today.
+          .
           These cover more than 10 themes ranging from "Health and Wellness",
           "Technology", "Fashion" and{" "}
           <a
