@@ -2,9 +2,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import DefaultPage from "./pages/AllSourcesDirPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => (
   <BrowserRouter>
+    <ScrollToTop />
     <Routes>
       {/* Redirect root to /d */}
       <Route path="/" element={<Navigate to="/d" replace />} />
