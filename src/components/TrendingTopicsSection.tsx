@@ -149,7 +149,7 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
                         >
                           Engagement represents the total number of interactions
                           a topic has received (likes, comments, shares,
-                          reposts, etc.) on <strong>{source}</strong>.
+                          reposts, etc.) on {source}.
                         </div>
                       </div>
                     </div>
