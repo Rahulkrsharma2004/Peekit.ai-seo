@@ -137,17 +137,22 @@ export default function TrendingTopicsSection({ source }: TrendingTopicsProps) {
                     Trending topic
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-black">
-                    <span className="relative group cursor-help">
-                      Engagement
-                      <div
-                        className="absolute left-0 top-full mt-2 w-56 p-2 text-xs text-white bg-black rounded-md shadow-lg 
-                 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none"
-                      >
-                        Engagement represents the total number of interactions a
-                        topic has received (likes, comments, shares, reposts,
-                        etc.) on {source}.
+                    <div className="flex items-center gap-2">
+                      <span>Engagement</span>
+                      <div className="relative group">
+                        <div className="flex items-center justify-center w-4 h-4 rounded-full border-2 border-gray-400 text-gray-600 text-xs font-bold cursor-pointer hover:bg-gray-100">
+                          ?
+                        </div>
+                        <div
+                          className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-80 p-3 text-[15px] text-black bg-white border border-gray-200 rounded-md shadow-lg 
+        opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none"
+                        >
+                          Engagement represents the total number of interactions
+                          a topic has received (likes, comments, shares,
+                          reposts, etc.) on <strong>{source}</strong>.
+                        </div>
                       </div>
-                    </span>
+                    </div>
                   </th>
 
                   <th className="px-6 py-4 text-left text-sm font-semibold text-black">

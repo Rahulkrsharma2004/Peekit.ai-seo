@@ -14,7 +14,7 @@ const TrendingHeader = () => {
   return (
     <header className="border-b border-data-border bg-background">
       <div className="container mx-auto px-6 sm:px-64 py-8">
-        <h1 className="text-4xl font-bold mb-6 text-center">Explore All sources in our page</h1>
+        <h1 className="text-4xl font-bold mb-6 text-center">Explore Our Pages</h1>
 
         <div className="flex flex-col gap-4">
           {sources.map((source) => (
